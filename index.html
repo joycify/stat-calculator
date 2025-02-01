@@ -35,6 +35,7 @@
     <p>3) Click the "Calculate" button to generate statistical results.</p>
     <p>4) The results will be displayed below the button.</p>
     <p>5) Ensure both datasets have the same number of values for correlation, ANOVA, and Chi-Square calculations.</p>
+
     <input type="text" id="inputData1" placeholder="Dataset 1 (e.g., 1 2 3 4 5)">
     <input type="text" id="inputData2" placeholder="Dataset 2 (optional, for correlation, ANOVA, etc.)">
     <br>
@@ -80,12 +81,13 @@
             return modes.join(", ") || "No mode";
         }
 
-        function calculateVariance(data, mean) {
-            return (data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / data.length).toFixed(3);
+        function calculateVariance(data) {
+            let mean = calculateMean(data);
+            return (data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / (data.length - 1)).toFixed(3);
         }
 
         function calculateStandardDeviation(variance) {
-            return Math.sqrt(variance).toFixed(3);
+            return Math.sqrt(Number(variance)).toFixed(3);
         }
 
         function calculateCorrelation(data1, data2) {
@@ -93,17 +95,15 @@
             let mean1 = calculateMean(data1);
             let mean2 = calculateMean(data2);
             let numerator = data1.reduce((sum, val, i) => sum + ((val - mean1) * (data2[i] - mean2)), 0);
-            let denom1 = Math.sqrt(data1.reduce((sum, val) => sum + Math.pow(val - mean1, 2), 0));
-            let denom2 = Math.sqrt(data2.reduce((sum, val) => sum + Math.pow(val - mean2, 2), 0));
-            return (numerator / (denom1 * denom2)).toFixed(3);
+            let stdDev1 = Math.sqrt(data1.reduce((sum, val) => sum + Math.pow(val - mean1, 2), 0) / (data1.length - 1));
+            let stdDev2 = Math.sqrt(data2.reduce((sum, val) => sum + Math.pow(val - mean2, 2), 0) / (data2.length - 1));
+            return (numerator / (stdDev1 * stdDev2)).toFixed(3);
         }
 
         function calculateANOVA(data1, data2) {
-            let mean1 = calculateMean(data1);
-            let mean2 = calculateMean(data2);
-            let variance1 = calculateVariance(data1, mean1);
-            let variance2 = calculateVariance(data2, mean2);
-            return "ANOVA F-statistic: " + ((variance1 + variance2) / 2).toFixed(3);
+            let variance1 = parseFloat(calculateVariance(data1));
+            let variance2 = parseFloat(calculateVariance(data2));
+            return "ANOVA F-statistic: " + (variance1 / variance2).toFixed(3);
         }
 
         function calculateChiSquare(data1, data2) {
@@ -124,30 +124,19 @@
                 return;
             }
 
-            let mean = calculateMean(data1);
-            document.getElementById("mean").textContent = "Mean: " + mean;
-            
-            let median = calculateMedian(data1);
-            document.getElementById("median").textContent = "Median: " + median;
-            
-            let mode = calculateMode(data1);
-            document.getElementById("mode").textContent = "Mode: " + mode;
-            
-            let variance = calculateVariance(data1, mean);
-            document.getElementById("variance").textContent = "Variance: " + variance;
-            
+            let variance = calculateVariance(data1);
             let stdDev = calculateStandardDeviation(variance);
+
+            document.getElementById("mean").textContent = "Mean: " + calculateMean(data1);
+            document.getElementById("median").textContent = "Median: " + calculateMedian(data1);
+            document.getElementById("mode").textContent = "Mode: " + calculateMode(data1);
+            document.getElementById("variance").textContent = "Variance: " + variance;
             document.getElementById("stdDev").textContent = "Standard Deviation: " + stdDev;
             
             if (data2.length > 0) {
-                let correlation = calculateCorrelation(data1, data2);
-                document.getElementById("correlation").textContent = "Correlation: " + correlation;
-                
-                let anova = calculateANOVA(data1, data2);
-                document.getElementById("anova").textContent = anova;
-                
-                let chiSquare = calculateChiSquare(data1, data2);
-                document.getElementById("chiSquare").textContent = chiSquare;
+                document.getElementById("correlation").textContent = "Correlation: " + calculateCorrelation(data1, data2);
+                document.getElementById("anova").textContent = calculateANOVA(data1, data2);
+                document.getElementById("chiSquare").textContent = calculateChiSquare(data1, data2);
             }
         }
     </script>
