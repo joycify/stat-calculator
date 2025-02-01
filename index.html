@@ -5,23 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Descriptive Statistics Calculator</title>
     <style>
-        input[type=text], textarea {
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        input[type=text] {
             width: 300px;
             height: 40px;
             font-size: 16px;
+            margin: 5px;
         }
         button {
             font-size: 16px;
             margin-top: 10px;
+            padding: 10px 20px;
         }
         .output {
             margin-top: 20px;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
     <h1>Descriptive Statistics Calculator</h1>
-    <textarea id="inputData" placeholder="Enter numbers separated by spaces (e.g., 1 2 3 4 5)"></textarea>
+    <p><strong>Instructions:</strong></p>
+    <p>1) Enter numbers separated by spaces in "Dataset 1" input field.</p>
+    <p>2) (Optional) Enter numbers in "Dataset 2" if you want to calculate correlation, ANOVA, or Chi-Square.</p>
+    <p>3) Click the "Calculate" button to generate statistical results.</p>
+    <p>4) The results will be displayed below the button.</p>
+    <p>5) Ensure both datasets have the same number of values for correlation, ANOVA, and Chi-Square calculations.</p>
+    <input type="text" id="inputData1" placeholder="Dataset 1 (e.g., 1 2 3 4 5)">
+    <input type="text" id="inputData2" placeholder="Dataset 2 (optional, for correlation, ANOVA, etc.)">
     <br>
     <button onclick="calculateStats()">Calculate</button>
     
@@ -31,74 +46,109 @@
         <p id="mode"></p>
         <p id="variance"></p>
         <p id="stdDev"></p>
+        <p id="correlation"></p>
+        <p id="anova"></p>
+        <p id="chiSquare"></p>
     </div>
 
     <script>
+        function parseInput(id) {
+            return document.getElementById(id).value.trim().split(/\s+/).map(Number).filter(n => !isNaN(n));
+        }
+
         function calculateMean(data) {
-            let sum = data.reduce((acc, val) => acc + val, 0);
-            return sum / data.length;
+            return (data.reduce((acc, val) => acc + val, 0) / data.length).toFixed(3);
         }
 
         function calculateMedian(data) {
             data.sort((a, b) => a - b);
             const mid = Math.floor(data.length / 2);
-            return data.length % 2 === 0 ? (data[mid - 1] + data[mid]) / 2 : data[mid];
+            return data.length % 2 === 0 ? ((data[mid - 1] + data[mid]) / 2).toFixed(3) : data[mid].toFixed(3);
         }
 
         function calculateMode(data) {
             const frequency = {};
             let maxFreq = 0;
             let modes = [];
-
             data.forEach(num => {
                 frequency[num] = (frequency[num] || 0) + 1;
                 if (frequency[num] > maxFreq) maxFreq = frequency[num];
             });
-
             for (let num in frequency) {
                 if (frequency[num] === maxFreq) modes.push(Number(num));
             }
-
-            return modes;
+            return modes.join(", ") || "No mode";
         }
 
         function calculateVariance(data, mean) {
-            let sum = data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0);
-            return sum / data.length;
+            return (data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / data.length).toFixed(3);
         }
 
         function calculateStandardDeviation(variance) {
-            return Math.sqrt(variance);
+            return Math.sqrt(variance).toFixed(3);
+        }
+
+        function calculateCorrelation(data1, data2) {
+            if (data1.length !== data2.length) return "Datasets must be the same length";
+            let mean1 = calculateMean(data1);
+            let mean2 = calculateMean(data2);
+            let numerator = data1.reduce((sum, val, i) => sum + ((val - mean1) * (data2[i] - mean2)), 0);
+            let denom1 = Math.sqrt(data1.reduce((sum, val) => sum + Math.pow(val - mean1, 2), 0));
+            let denom2 = Math.sqrt(data2.reduce((sum, val) => sum + Math.pow(val - mean2, 2), 0));
+            return (numerator / (denom1 * denom2)).toFixed(3);
+        }
+
+        function calculateANOVA(data1, data2) {
+            let mean1 = calculateMean(data1);
+            let mean2 = calculateMean(data2);
+            let variance1 = calculateVariance(data1, mean1);
+            let variance2 = calculateVariance(data2, mean2);
+            return "ANOVA F-statistic: " + ((variance1 + variance2) / 2).toFixed(3);
+        }
+
+        function calculateChiSquare(data1, data2) {
+            if (data1.length !== data2.length) return "Datasets must be the same length";
+            let sum = 0;
+            for (let i = 0; i < data1.length; i++) {
+                sum += Math.pow(data1[i] - data2[i], 2) / (data2[i] || 1);
+            }
+            return "Chi-Square Statistic: " + sum.toFixed(3);
         }
 
         function calculateStats() {
-            const input = document.getElementById("inputData").value;
-            const data = input.split(" ").map(Number);
+            const data1 = parseInput("inputData1");
+            const data2 = parseInput("inputData2");
 
-            if (data.some(isNaN)) {
-                alert("Invalid input. Please enter valid numbers separated by spaces.");
+            if (data1.length === 0) {
+                alert("Please enter valid numbers in Dataset 1.");
                 return;
             }
 
-            if (data.length === 0) {
-                alert("No data entered.");
-                return;
-            }
-
-            const mean = calculateMean(data);
+            let mean = calculateMean(data1);
             document.getElementById("mean").textContent = "Mean: " + mean;
-
-            const median = calculateMedian(data);
+            
+            let median = calculateMedian(data1);
             document.getElementById("median").textContent = "Median: " + median;
-
-            const mode = calculateMode(data);
-            document.getElementById("mode").textContent = "Mode: " + (mode.length ? mode.join(", ") : "No mode");
-
-            const variance = calculateVariance(data, mean);
+            
+            let mode = calculateMode(data1);
+            document.getElementById("mode").textContent = "Mode: " + mode;
+            
+            let variance = calculateVariance(data1, mean);
             document.getElementById("variance").textContent = "Variance: " + variance;
-
-            const stdDev = calculateStandardDeviation(variance);
+            
+            let stdDev = calculateStandardDeviation(variance);
             document.getElementById("stdDev").textContent = "Standard Deviation: " + stdDev;
+            
+            if (data2.length > 0) {
+                let correlation = calculateCorrelation(data1, data2);
+                document.getElementById("correlation").textContent = "Correlation: " + correlation;
+                
+                let anova = calculateANOVA(data1, data2);
+                document.getElementById("anova").textContent = anova;
+                
+                let chiSquare = calculateChiSquare(data1, data2);
+                document.getElementById("chiSquare").textContent = chiSquare;
+            }
         }
     </script>
 </body>
