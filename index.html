@@ -29,15 +29,8 @@
 </head>
 <body>
     <h1>Descriptive Statistics Calculator</h1>
-    <p><strong>Instructions:</strong></p>
-    <p>1) Enter numbers separated by spaces in "Dataset 1" input field.</p>
-    <p>2) (Optional) Enter numbers in "Dataset 2" if you want to calculate correlation, ANOVA, or Chi-Square.</p>
-    <p>3) Click the "Calculate" button to generate statistical results.</p>
-    <p>4) The results will be displayed below the button.</p>
-    <p>5) Ensure both datasets have the same number of values for correlation, ANOVA, and Chi-Square calculations.</p>
-
     <input type="text" id="inputData1" placeholder="Dataset 1 (e.g., 1 2 3 4 5)">
-    <input type="text" id="inputData2" placeholder="Dataset 2 (optional, for correlation, ANOVA, etc.)">
+    <input type="text" id="inputData2" placeholder="Dataset 2 (optional)">
     <br>
     <button onclick="calculateStats()">Calculate</button>
     
@@ -78,11 +71,11 @@
             for (let num in frequency) {
                 if (frequency[num] === maxFreq) modes.push(Number(num));
             }
-            return modes.join(", ") || "No mode";
+            return modes.length === data.length ? "No mode" : modes.join(", ");
         }
 
         function calculateVariance(data) {
-            let mean = calculateMean(data);
+            let mean = parseFloat(calculateMean(data));
             return (data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / (data.length - 1)).toFixed(3);
         }
 
@@ -92,12 +85,13 @@
 
         function calculateCorrelation(data1, data2) {
             if (data1.length !== data2.length) return "Datasets must be the same length";
-            let mean1 = calculateMean(data1);
-            let mean2 = calculateMean(data2);
+            let mean1 = parseFloat(calculateMean(data1));
+            let mean2 = parseFloat(calculateMean(data2));
             let numerator = data1.reduce((sum, val, i) => sum + ((val - mean1) * (data2[i] - mean2)), 0);
-            let stdDev1 = Math.sqrt(data1.reduce((sum, val) => sum + Math.pow(val - mean1, 2), 0) / (data1.length - 1));
-            let stdDev2 = Math.sqrt(data2.reduce((sum, val) => sum + Math.pow(val - mean2, 2), 0) / (data2.length - 1));
-            return (numerator / (stdDev1 * stdDev2)).toFixed(3);
+            let stdDev1 = parseFloat(calculateStandardDeviation(calculateVariance(data1)));
+            let stdDev2 = parseFloat(calculateStandardDeviation(calculateVariance(data2)));
+            if (stdDev1 === 0 || stdDev2 === 0) return "Correlation cannot be calculated";
+            return (numerator / ((data1.length - 1) * stdDev1 * stdDev2)).toFixed(3);
         }
 
         function calculateANOVA(data1, data2) {
@@ -110,7 +104,8 @@
             if (data1.length !== data2.length) return "Datasets must be the same length";
             let sum = 0;
             for (let i = 0; i < data1.length; i++) {
-                sum += Math.pow(data1[i] - data2[i], 2) / (data2[i] || 1);
+                if (data2[i] === 0) return "Chi-Square error: division by zero";
+                sum += Math.pow(data1[i] - data2[i], 2) / data2[i];
             }
             return "Chi-Square Statistic: " + sum.toFixed(3);
         }
