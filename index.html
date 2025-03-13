@@ -5,51 +5,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Descriptive Statistics Calculator</title>
     <style>
+        /* General Styles */
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 20px;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+            margin: 0;
+            padding: 20px;
         }
+
+        h1 {
+            color: #4a90e2;
+            font-size: 2em;
+        }
+
+        p {
+            font-size: 1em;
+            color: #555;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Input Fields */
         input[type=text] {
-            width: 300px;
-            height: 40px;
-            font-size: 16px;
-            margin: 5px;
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            transition: border 0.3s;
         }
+
+        input[type=text]:focus {
+            border-color: #4a90e2;
+        }
+
+        /* Button */
         button {
-            font-size: 16px;
-            margin-top: 10px;
-            padding: 10px 20px;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
+
+        button:hover {
+            background-color: #357ABD;
+        }
+
+        /* Output Section */
         .output {
             margin-top: 20px;
-            font-size: 18px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1.1rem;
         }
+
+        .output p {
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .output p span {
+            font-weight: bold;
+            color: #4a90e2;
+        }
+
+        /* Instructions */
+        .instructions {
+            background-color: #f4f7fc;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+
     </style>
 </head>
 <body>
-    <h1>Descriptive Statistics Calculator</h1>
-    <p><strong>Instructions:</strong></p>
-    <p>1) Enter numbers separated by spaces in "Dataset 1" input field.</p>
-    <p>2) (Optional) Enter numbers in "Dataset 2" if you want to calculate correlation, ANOVA, or Chi-Square.</p>
-    <p>3) Click the "Calculate" button to generate statistical results.</p>
-    <p>4) The results will be displayed below the button.</p>
-    <p>5) Ensure both datasets have the same number of values for correlation, ANOVA, and Chi-Square calculations.</p>
+    <div class="container">
+        <h1>Descriptive Statistics Calculator</h1>
 
-    <input type="text" id="inputData1" placeholder="Dataset 1 (e.g., 1 2 3 4 5)">
-    <input type="text" id="inputData2" placeholder="Dataset 2 (optional)">
-    <br>
-    <button onclick="calculateStats()">Calculate</button>
-    
-    <div class="output">
-        <p id="mean"></p>
-        <p id="median"></p>
-        <p id="mode"></p>
-        <p id="variance"></p>
-        <p id="stdDev"></p>
-        <p id="correlation"></p>
-        <p id="anova"></p>
-        <p id="chiSquare"></p>
+        <div class="instructions">
+            <p><strong>Instructions:</strong></p>
+            <ul>
+                <li>1) Enter numbers separated by spaces in "Dataset 1" input field.</li>
+                <li>2) (Optional) Enter numbers in "Dataset 2" if you want to calculate correlation, ANOVA, or Chi-Square.</li>
+                <li>3) Click the "Calculate" button to generate statistical results.</li>
+                <li>4) The results will be displayed below the button.</li>
+                <li>5) Ensure both datasets have the same number of values for correlation, ANOVA, and Chi-Square calculations.</li>
+            </ul>
+        </div>
+
+        <input type="text" id="inputData1" placeholder="Dataset 1 (e.g., 1 2 3 4 5)">
+        <input type="text" id="inputData2" placeholder="Dataset 2 (optional)">
+        <button onclick="calculateStats()">Calculate</button>
+
+        <div class="output">
+            <p id="mean"><span>Mean:</span></p>
+            <p id="median"><span>Median:</span></p>
+            <p id="mode"><span>Mode:</span></p>
+            <p id="variance"><span>Variance:</span></p>
+            <p id="stdDev"><span>Standard Deviation:</span></p>
+            <p id="correlation"><span>Correlation:</span></p>
+            <p id="anova"><span>ANOVA:</span></p>
+            <p id="chiSquare"><span>Chi-Square:</span></p>
+        </div>
     </div>
 
     <script>
@@ -134,7 +210,7 @@
             document.getElementById("mode").textContent = "Mode: " + calculateMode(data1);
             document.getElementById("variance").textContent = "Variance: " + variance;
             document.getElementById("stdDev").textContent = "Standard Deviation: " + stdDev;
-            
+
             if (data2.length > 0) {
                 document.getElementById("correlation").textContent = "Correlation: " + calculateCorrelation(data1, data2);
                 document.getElementById("anova").textContent = calculateANOVA(data1, data2);
