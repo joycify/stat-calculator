@@ -3,130 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descriptive Statistics Calculator</title>
-    <style>
-        /* General Styles */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f7fc;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-        }
-
-        h1 {
-            color: #4a90e2;
-            font-size: 2em;
-        }
-
-        p {
-            font-size: 1em;
-            color: #555;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 30px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Input Fields */
-        input[type=text] {
-            width: 100%;
-            padding: 12px 20px;
-            font-size: 1rem;
-            margin-bottom: 15px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-            transition: border 0.3s;
-        }
-
-        input[type=text]:focus {
-            border-color: #4a90e2;
-        }
-
-        /* Button */
-        button {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.1rem;
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #357ABD;
-        }
-
-        /* Output Section */
-        .output {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 1.1rem;
-        }
-
-        .output p {
-            margin: 10px 0;
-            color: #333;
-        }
-
-        .output p span {
-            font-weight: bold;
-            color: #4a90e2;
-        }
-
-        /* Instructions */
-        .instructions {
-            background-color: #f4f7fc;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            margin-bottom: 20px;
-        }
-
-    </style>
+    <title>Advanced Statistics Calculator</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Descriptive Statistics Calculator</h1>
+        <header>
+            <h1>Advanced Statistics Calculator</h1>
+            <p class="subtitle">Analyze your data with precision</p>
+        </header>
 
-        <div class="instructions">
-            <p><strong>Instructions:</strong></p>
-            <ul>
-                <li>1) Enter numbers separated by spaces in "Dataset 1" input field.</li>
-                <li>2) (Optional) Enter numbers in "Dataset 2" if you want to calculate correlation, ANOVA, or Chi-Square.</li>
-                <li>3) Click the "Calculate" button to generate statistical results.</li>
-                <li>4) The results will be displayed below the button.</li>
-                <li>5) Ensure both datasets have the same number of values for correlation, ANOVA, and Chi-Square calculations.</li>
-            </ul>
+        <div class="card instructions">
+            <h2>How to Use</h2>
+            <ol>
+                <li>Enter numbers separated by spaces in "Dataset 1" input field</li>
+                <li>Optionally enter numbers in "Dataset 2" for correlation, ANOVA, or Chi-Square</li>
+                <li>Click "Calculate" to generate statistical results</li>
+                <li>Both datasets should have the same number of values for comparative statistics</li>
+            </ol>
         </div>
 
-        <input type="text" id="inputData1" placeholder="Dataset 1 (e.g., 1 2 3 4 5)">
-        <input type="text" id="inputData2" placeholder="Dataset 2 (optional)">
-        <button onclick="calculateStats()">Calculate</button>
+        <div class="input-section">
+            <div class="input-group">
+                <label for="inputData1">Dataset 1</label>
+                <input type="text" id="inputData1" placeholder="e.g., 1 2 3 4 5">
+            </div>
+            
+            <div class="input-group">
+                <label for="inputData2">Dataset 2 (optional)</label>
+                <input type="text" id="inputData2" placeholder="e.g., 5 4 3 2 1">
+            </div>
+            
+            <button id="calculate-btn" onclick="calculateStats()">Calculate Statistics</button>
+        </div>
 
-        <div class="output">
-            <p id="mean"><span>Mean:</span></p>
-            <p id="median"><span>Median:</span></p>
-            <p id="mode"><span>Mode:</span></p>
-            <p id="variance"><span>Variance:</span></p>
-            <p id="stdDev"><span>Standard Deviation:</span></p>
-            <p id="correlation"><span>Correlation:</span></p>
-            <p id="anova"><span>ANOVA:</span></p>
-            <p id="chiSquare"><span>Chi-Square:</span></p>
+        <div class="results-section">
+            <h2>Results</h2>
+            
+            <div class="results-grid">
+                <div class="stat-box">
+                    <h3>Dataset 1 Statistics</h3>
+                    <p id="mean"><span class="label">Mean:</span> <span class="value">-</span></p>
+                    <p id="median"><span class="label">Median:</span> <span class="value">-</span></p>
+                    <p id="mode"><span class="label">Mode:</span> <span class="value">-</span></p>
+                    <p id="range"><span class="label">Range:</span> <span class="value">-</span></p>
+                    <p id="variance"><span class="label">Variance:</span> <span class="value">-</span></p>
+                    <p id="stdDev"><span class="label">Standard Deviation:</span> <span class="value">-</span></p>
+                </div>
+                
+                <div class="stat-box comparative">
+                    <h3>Comparative Statistics</h3>
+                    <p id="correlation"><span class="label">Correlation:</span> <span class="value">-</span></p>
+                    <p id="anova"><span class="label">ANOVA F-statistic:</span> <span class="value">-</span></p>
+                    <p id="chiSquare"><span class="label">Chi-Square:</span> <span class="value">-</span></p>
+                </div>
+            </div>
         </div>
     </div>
+
+    <footer>
+        <p>© Copyright 2025 Joyce Wong</p>
+    </footer>
 
     <script>
         function parseInput(id) {
@@ -157,6 +94,11 @@
             return modes.length === data.length ? "No mode" : modes.join(", ");
         }
 
+        function calculateRange(data) {
+            data.sort((a, b) => a - b);
+            return (data[data.length - 1] - data[0]).toFixed(3);
+        }
+
         function calculateVariance(data) {
             let mean = parseFloat(calculateMean(data));
             return (data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / (data.length - 1)).toFixed(3);
@@ -180,17 +122,17 @@
         function calculateANOVA(data1, data2) {
             let variance1 = parseFloat(calculateVariance(data1));
             let variance2 = parseFloat(calculateVariance(data2));
-            return "ANOVA F-statistic: " + (variance1 / variance2).toFixed(3);
+            return "F: " + (variance1 / variance2).toFixed(3);
         }
 
         function calculateChiSquare(data1, data2) {
             if (data1.length !== data2.length) return "Datasets must be the same length";
             let sum = 0;
             for (let i = 0; i < data1.length; i++) {
-                if (data2[i] === 0) return "Chi-Square error: division by zero";
+                if (data2[i] === 0) return "Error: division by zero";
                 sum += Math.pow(data1[i] - data2[i], 2) / data2[i];
             }
-            return "Chi-Square Statistic: " + sum.toFixed(3);
+            return "Value: " + sum.toFixed(3);
         }
 
         function calculateStats() {
@@ -202,20 +144,38 @@
                 return;
             }
 
-            let variance = calculateVariance(data1);
-            let stdDev = calculateStandardDeviation(variance);
-
-            document.getElementById("mean").textContent = "Mean: " + calculateMean(data1);
-            document.getElementById("median").textContent = "Median: " + calculateMedian(data1);
-            document.getElementById("mode").textContent = "Mode: " + calculateMode(data1);
-            document.getElementById("variance").textContent = "Variance: " + variance;
-            document.getElementById("stdDev").textContent = "Standard Deviation: " + stdDev;
+            // Update the display with result values
+            document.querySelector("#mean .value").textContent = calculateMean(data1);
+            document.querySelector("#median .value").textContent = calculateMedian(data1);
+            document.querySelector("#mode .value").textContent = calculateMode(data1);
+            
+            const range = calculateRange(data1);
+            document.querySelector("#range .value").textContent = range;
+            
+            const variance = calculateVariance(data1);
+            document.querySelector("#variance .value").textContent = variance;
+            
+            const stdDev = calculateStandardDeviation(variance);
+            document.querySelector("#stdDev .value").textContent = stdDev;
 
             if (data2.length > 0) {
-                document.getElementById("correlation").textContent = "Correlation: " + calculateCorrelation(data1, data2);
-                document.getElementById("anova").textContent = calculateANOVA(data1, data2);
-                document.getElementById("chiSquare").textContent = calculateChiSquare(data1, data2);
+                document.querySelector("#correlation .value").textContent = calculateCorrelation(data1, data2);
+                document.querySelector("#anova .value").textContent = calculateANOVA(data1, data2);
+                document.querySelector("#chiSquare .value").textContent = calculateChiSquare(data1, data2);
+                
+                // Show comparative section when dataset 2 is provided
+                document.querySelector(".comparative").classList.add("active");
+            } else {
+                document.querySelector("#correlation .value").textContent = "-";
+                document.querySelector("#anova .value").textContent = "-";
+                document.querySelector("#chiSquare .value").textContent = "-";
+                
+                // Hide comparative section when no dataset 2
+                document.querySelector(".comparative").classList.remove("active");
             }
+            
+            // Show results with animation
+            document.querySelector(".results-section").classList.add("show-results");
         }
     </script>
 </body>
